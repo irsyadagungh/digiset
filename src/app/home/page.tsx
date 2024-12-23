@@ -2,6 +2,9 @@
 
 import { useState } from "react";
 import { delay, motion } from "framer-motion";
+import AddAssetsForm from "@/components/formAddAssets";
+import DetailAssets from "@/components/detailAssets";
+import PlusIcon from "@/components/plusIcon";
 
 export default function HomePage() {
   const [isAssets, setIsAssets] = useState(false);
@@ -111,67 +114,48 @@ function Home({ handleAsset }: { handleAsset: () => void }) {
 }
 
 function Asset({ handleAsset }: { handleAsset: () => void }) {
-  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const [isAdd, setIsAdd] = useState(false);
+  const [selectedAssets, setSelectedAssets] = useState(false);
 
-  // Variants untuk animasi fade-in awal
-  const initialVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 },
-  };
+  function handleAdd() {
+    setIsAdd((prevIsAdd) => {
+      const newIsAdd = !prevIsAdd;
+      console.log("isAdd (updated)", newIsAdd);
 
-  // Variants untuk animasi membesar
-  const expandVariants = {
-    initial: { width: "8rem", height: "11rem" }, // ukuran awal
-    expanded: {
-      width: "50vw",
-      height: "50vh",
-      position: "fixed",
-      top: "50%",
-      left: "50%",
-      transform: "translate(-50%, -50%)",
-      zIndex: 10,
-      backgroundColor: "rgba(0, 0, 0, 0.8)",
-      transition: { duration: 0.5 },
-    },
-  };
+      return newIsAdd;
+    });
+  }
 
-  function handleAdd(index: number) {
-    setSelectedIndex((prevIndex) => (prevIndex === index ? null : index));
+  function handleselectedAssets() {
+    setSelectedAssets((prevSelectedAssets) => {
+      const newSelectedAssets = !prevSelectedAssets;
+      console.log("selectedAssets (updated)", newSelectedAssets);
+
+      return newSelectedAssets;
+    });
   }
 
   return (
     <div className={`flex flex-wrap gap-4 relative justify-start`}>
+      <motion.div
+        onClick={() => handleAdd()}
+        className={`w-32 h-44 bg-containerSecondary rounded-lg flex flex-col justify-around items-center p-4 cursor-pointer`}
+      >
+        <PlusIcon />
+        <p>Add Assets</p>
+      </motion.div>
+      <AddAssetsForm isVisible={isAdd} handleVisible={handleAdd} />
       {Array.from({ length: 6 }).map((_, index) => (
         <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: "easeOut", delay: index * 0.1 }}
           key={index}
-          initial="hidden"
-          animate={selectedIndex === null ? "visible" : undefined}
-          variants={selectedIndex === null ? initialVariants : expandVariants}
-          whileHover={selectedIndex === null ? { scale: 1.05 } : undefined}
-          onClick={() => handleAdd(index)}
-          className={`bg-containerSecondary w-32 h-44 rounded-lg cursor-pointer ${
-            selectedIndex === index ? "fixed" : ""
-          }`}
-          style={{
-            zIndex: selectedIndex === index ? 10 : 1,
-          }}
+          onClick={() => handleselectedAssets()}
+          className={`bg-containerSecondary w-32 h-44 rounded-lg cursor-pointer`}
         ></motion.div>
       ))}
+      <DetailAssets isVisible={selectedAssets} handleVisible={handleselectedAssets} />
     </div>
-  );
-}
-
-
-function PlusIcon() {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      id="Layer_1"
-      data-name="Layer 1"
-      viewBox="0 0 24 24"
-      fill="currentColor"
-    >
-      <path d="M17,12c0,.276-.224,.5-.5,.5h-4v4c0,.276-.224,.5-.5,.5s-.5-.224-.5-.5v-4H7.5c-.276,0-.5-.224-.5-.5s.224-.5,.5-.5h4V7.5c0-.276,.224-.5,.5-.5s.5,.224,.5,.5v4h4c.276,0,.5,.224,.5,.5Zm7-7.5v15c0,2.481-2.019,4.5-4.5,4.5H4.5c-2.481,0-4.5-2.019-4.5-4.5V4.5C0,2.019,2.019,0,4.5,0h15c2.481,0,4.5,2.019,4.5,4.5Zm-1,0c0-1.93-1.57-3.5-3.5-3.5H4.5c-1.93,0-3.5,1.57-3.5,3.5v15c0,1.93,1.57,3.5,3.5,3.5h15c1.93,0,3.5-1.57,3.5-3.5V4.5Z" />
-    </svg>
   );
 }
