@@ -138,8 +138,8 @@ export class AssetModel {
             this.validateCreateAsset(data);
             console.log('success')
             try {
-                const convert = this.convertImage(data.buktiKepemilikan);
-                this.firebaseModule.addDocument('Asset', data.walletId, {'bukti_kepemilikan' : convert, 'bukti_transaksi': '', 'prevWalletId': "", 'walletId' : data.walletId,  'created_at' :Date.now(), 'updated_at' :Date.now() })
+                //const convert = this.convertImage(data.buktiKepemilikan);
+                this.firebaseModule.addDocument('Asset', data.walletId, {'label' : data.label ,'bukti_kepemilikan' : data.buktiKepemilikan, 'bukti_transaksi': data.buktiTransaksi , 'prevWalletId': "", 'walletId' : data.walletId,  'created_at' :Date.now(), 'updated_at' :Date.now() })
             } catch (error) {
                 console.error('Database query error:', error);
                 throw new DatabaseError('Error creating item', error as Error);
@@ -155,13 +155,15 @@ export class AssetModel {
     }
 
     public async update(id:string, data: IAssetUpdate):Promise<IAssetResponse>{
-        const convert = this.convertImage(data.buktiTransaksi);
+        //const convert = this.convertImage(data.buktiTransaksi);
         try{
             await this.findById(id);
+            const updatedData = {
+            buktiTransaksi: data.buktiTransaksi,
+            updated_at: new Date(),
+        };
             
-            this.firebaseModule.updateDocument('Asset', data.walletId, {'bukti_transaksi' : convert, 'updated_at' :new Date()} )
-            //taroh API update disini, contoh :
-            //const [result] = await this.pool.query<ResultSetHeader>('UPDATE user SET ? WHERE id = ?',[data, id]  );  
+            this.firebaseModule.updateDocument('Asset', data.walletId, {'buktiTransaksi' : data.buktiTransaksi , 'updated_at' :new Date()} ) 
             console.log(data)
 
             return await this.findById(id)

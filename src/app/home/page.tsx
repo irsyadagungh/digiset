@@ -1,18 +1,37 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { delay, motion } from "framer-motion";
 import AddAssetsForm from "@/components/formAddAssets";
 import DetailAssets from "@/components/detailAssets";
 import PlusIcon from "@/components/plusIcon";
+import { useSearchParams } from "next/navigation";
+import { IUser } from "@/types/User.type";
 
 export default function HomePage() {
+  const searchParam = useSearchParams();
   const [isAssets, setIsAssets] = useState(false);
+  const [user, setUser] = useState<IUser>();
   console.log("Assets", isAssets);
+
+  useEffect(() => {
+    const userQuery = searchParam.get("user");
+
+    if (userQuery) {
+      try {
+        const parsedUser = JSON.parse(decodeURIComponent(userQuery));
+        console.log("User:", parsedUser);
+        setUser(parsedUser);
+      } catch (error) {
+        console.error("Failed to parse user data:", error);
+      }
+    } else {
+      console.warn("No 'user' parameter found in query string.");
+    }
+  }, [searchParam]);
 
   // animation
   const [hNav, setHNav] = useState("h-52");
-  const [flex, setFlex] = useState("flex-col");
 
   function handleAsset() {
     setIsAssets((prevIsAssets) => {
@@ -62,7 +81,7 @@ export default function HomePage() {
                 <span
                   className={`text-transparent bg-clip-text bg-gradient-to-r from-blue to-purple`}
                 >
-                  Irsyad Agung!
+                  {user?.username}
                 </span>
               </motion.h1>
               <input
@@ -155,7 +174,10 @@ function Asset({ handleAsset }: { handleAsset: () => void }) {
           className={`bg-containerSecondary w-32 h-44 rounded-lg cursor-pointer`}
         ></motion.div>
       ))}
-      <DetailAssets isVisible={selectedAssets} handleVisible={handleselectedAssets} />
+      <DetailAssets
+        isVisible={selectedAssets}
+        handleVisible={handleselectedAssets}
+      />
     </div>
   );
 }

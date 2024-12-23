@@ -40,6 +40,7 @@ export class UserController{
     public signin = async(email: string, password:string ):Promise<void>=>{
         try {
             await  this.userModel.signin(email, password )
+            
         } catch (error) {
             if (error instanceof DatabaseError) {
                 console.log("database error")               

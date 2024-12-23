@@ -2,16 +2,20 @@ import { motion } from "framer-motion";
 import React, { ReactNode, useState } from "react";
 import PlusIcon from "./plusIcon";
 import CardOverlayLayout from "./layout/cardOverlayLayout";
+import { IAssetCreate } from "@/types/Asset.type";
+
 
 interface AddAssetsFormProps {
   isVisible: boolean;
   handleVisible?: () => void;
 }
 
+
 export default function AddAssetsForm({
   isVisible,
   handleVisible,
 }: AddAssetsFormProps) {
+    
   const handleImageUpload = (
     event: React.ChangeEvent<HTMLInputElement>,
     setPreview: React.Dispatch<React.SetStateAction<string | null>>
@@ -31,14 +35,25 @@ export default function AddAssetsForm({
 
   const [ownershipProof, setOwnershipProof] = useState<string | null>(null);
   const [transactionProof, setTransactionProof] = useState<string | null>(null);
+  const [assetAdd, setassetAdd] = useState<IAssetCreate>();
+  const [label, setlabel] = useState("");
+  const [buktiKepemilikan, setbuktiKepemilikan] = useState("");
+  const [buktiTransaksi, setBuktiTransaksi] = useState("");
+
+
+  const handleAssetPost = () =>{
+
+  }
 
   return (
     <CardOverlayLayout isVisible={isVisible}>
-      <form>
+      
         <input
           type="text"
           placeholder="Asset Label"
           className={`w-full p-2 rounded-full mb-4 backdrop-blur bg-transparent border border-blue px-4`}
+          onChange={()=>{setlabel}}
+          value = {label}
         />
         <div className="flex justify-between items-center mt-4">
           {/* Ownership Proof */}
@@ -101,6 +116,7 @@ export default function AddAssetsForm({
               type="file"
               accept="image/*"
               className="hidden"
+              
               onChange={(e) => handleImageUpload(e, setTransactionProof)}
             />
           </div>
@@ -120,7 +136,7 @@ export default function AddAssetsForm({
             Close
           </button>
         </div>
-      </form>
+      
     </CardOverlayLayout>
   );
 }
