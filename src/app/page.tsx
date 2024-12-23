@@ -1,8 +1,18 @@
+"use client";
 import Image from "next/image";
 import Padlock from "../../assets/icon/padlock-check.svg"
 import CardHero from "@/components/cardHero";
+import { useState } from "react";
+import { IUserCreate } from "@/types/User.type";
+import { UserController } from "@/controllers/User.controller";
+import { UserModel } from "@/Model/User.model";
 
 export default function Home() {
+
+  const [userData, setuserData] = useState<IUserCreate>({username:"", email:"",password:""});
+  const UC = new UserController;
+  const handleRegister = UC.create(userData);
+
   return (
     <div
       className={`relative w-screen h-full font-[family-name:var(--font-cabin)]`}
@@ -14,6 +24,9 @@ export default function Home() {
           <a href="#" className={`text-lg bg-blue py-1 px-4 rounded-md`}>
             Sign In
           </a>
+          <button onClick={()=>{handleRegister}}>
+
+          </button>
       </nav>
       <div
         className={`w-[700px] h-[700px] bg-purple absolute -left-96 -top-72 rounded-full`}
