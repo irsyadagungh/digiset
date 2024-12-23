@@ -1,6 +1,6 @@
 import React from "react";
 
-interface CardHeroProps {
+export interface CardHeroProps {
   svg: React.ReactNode;
   title: string;
   description: string;
